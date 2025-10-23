@@ -1,0 +1,8 @@
+{% extends "encryption.jinja" %}
+{% block encryption_form %}
+    <input type="hidden" name="mode" value="caesar">
+	<label for="message">Message:</label>
+    <input type="text" id="message" name="message" value="{{ message }}">
+    <label for="shift-size">Caesar shift size:</label>
+    <input type="number" id="shift-size" name="shift_size" value="{{ shift_size }}">
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "encryption.jinja" %}
+{% block encryption_form %}
+    <input type="hidden" name="mode" value="vigenere">
+	<label for="message">Message:</label>
+    <input type="text" id="message" name="message" value="{{ message }}">
+    <label for="keyword">Vigenère keyword:</label>
+    <input type="text" id="keyword" name="keyword" value="{{ keyword }}">
+{% endblock %}

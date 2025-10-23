@@ -4,13 +4,24 @@
 </head>
 <body>
     <h1>Encryption</h1>
-    <form method="post">
-        <label for="message">Message:</label>
-        <input type="text" id="message" name="message" value="{{ message }}">
-        <label for="shift-size">Ceasar shift size:</label>
-        <input type="number" id="shift-size" name="shift_size" value="{{ shift_size }}">
-        <input type="submit" value="Encrypt">
-    </form>
+        <form method="get">
+            <label> Choose mode:
+            {{ mode }}
+                <select name="mode">
+                    <option {% if mode == "caesar" %} selected="selected" {% endif %} value="caesar">Caesar</option>
+                    <option {% if mode == "vigenere" %} selected="selected" {% endif %} value="vigenere">Vigenère</option>
+                </select>
+            </label>
+            <input type="submit" value="Change mode">
+        </form>
+    {% if mode %}
+        <form method="post">
+            {% block encryption_form %}
+
+            {% endblock %}
+            <input type="submit" value="Encrypt">
+        </form>
+    {% endif %}
     <p>
         {{ encrypted_message }}
     </p>
