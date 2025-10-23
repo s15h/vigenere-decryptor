@@ -1,0 +1,17 @@
+<html lang="en">
+<head>
+    <title>Encryption</title>
+</head>
+<body>
+    <h1>Encryption</h1>
+    <form method="post">
+        <label for="message">Message:</label>
+        <input type="text" id="message" name="message" value="{{ message }}">
+        <input type="number" id="shift-size" name="shift_size" value="{{ shift_size }}">
+        <input type="submit" value="Encrypt">
+    </form>
+    <p>
+        {{ encrypted_message }}
+    </p>
+</body>
+</html>
