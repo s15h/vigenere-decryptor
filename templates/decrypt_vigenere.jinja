@@ -1,0 +1,18 @@
+<html lang="en">
+<head>
+    <title>Decryption</title>
+</head>
+<body>
+    <h1>Decryption</h1>
+    <form method="post">
+        <label for="cypher">Cypher:</label>
+        <input type="text" id="cypher" name="cypher" value="{{ cypher }}">
+        <label for="keyword">Vigenère keyword:</label>
+        <input type="text" id="keyword" name="keyword" value="{{ keyword }}">
+        <input type="submit" value="Decrypt">
+    </form>
+    <p>
+        {{ decrypted_message }}
+    </p>
+</body>
+</html>

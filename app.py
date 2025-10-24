@@ -9,6 +9,18 @@ app = Flask(__name__)
 def hello_world():  # put application's code here
     return 'Hello World!'
 
+@app.route('/decrypt/vigenere', methods=['GET','POST'])
+def decrypt_vigenere():
+    if request.method == 'POST':
+        cypher = request.form['cypher']
+        keyword = request.form['keyword']
+        decrypted_message = vigenere.encryptor.vigenere(
+            vigenere.encryptor.vig_decryptkey(keyword),
+            cypher
+        )
+        return render_template('decrypt_vigenere.jinja',decrypted_message=decrypted_message,cypher=cypher,keyword=keyword)
+    return render_template('decrypt_vigenere.jinja')
+
 
 @app.route('/encrypt', methods=['GET', 'POST'])
 def encrypt():
