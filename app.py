@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request
 
 import vigenere.encryptor
+from vigenere.cypher import Cypher
 
 app = Flask(__name__)
 
@@ -9,7 +10,22 @@ app = Flask(__name__)
 def hello_world():  # put application's code here
     return 'Hello World!'
 
-@app.route('/decrypt/vigenere', methods=['GET','POST'])
+
+@app.route('/cypher/info/', methods=['GET', 'POST'])
+def cypher_info():
+    if request.method == 'POST':
+        cypher = Cypher(request.form['cypher'])
+        patterns = cypher.get_repeating_patterns()
+        return render_template(
+            'cypher_info.jinja',
+            cypher=cypher.cypher_text,
+            patterns=patterns,
+            most_likely_key_sizes=cypher.determine_most_likely_key_sizes()
+        )
+    return render_template('cypher_info.jinja')
+
+
+@app.route('/decrypt/vigenere', methods=['GET', 'POST'])
 def decrypt_vigenere():
     if request.method == 'POST':
         cypher = request.form['cypher']
@@ -18,7 +34,12 @@ def decrypt_vigenere():
             vigenere.encryptor.vig_decryptkey(keyword),
             cypher
         )
-        return render_template('decrypt_vigenere.jinja',decrypted_message=decrypted_message,cypher=cypher,keyword=keyword)
+        return render_template(
+            'decrypt_vigenere.jinja',
+            decrypted_message=decrypted_message,
+            cypher=cypher,
+           keyword=keyword
+        )
     return render_template('decrypt_vigenere.jinja')
 
 
@@ -47,6 +68,7 @@ def encrypt():
 
     return render_template('encryption.jinja')
 
+
 def encrypt_caesar():
     message = request.form['message']
     shift_size = int(request.form['shift_size'])
@@ -59,6 +81,7 @@ def encrypt_caesar():
         mode="caesar"
     )
 
+
 def encrypt_vigenere():
     message = request.form['message']
     keyword = request.form['keyword']
@@ -70,6 +93,7 @@ def encrypt_vigenere():
         keyword=keyword,
         mode="vigenere"
     )
+
 
 if __name__ == '__main__':
     app.run(debug=True)

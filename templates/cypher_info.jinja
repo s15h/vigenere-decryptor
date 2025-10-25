@@ -1,0 +1,44 @@
+<html lang="en">
+<head>
+    <title>Cypher Information</title>
+</head>
+<body>
+    <h1>Cypher Information</h1>
+    <form method="POST">
+        <label for="cypher">Cypher:</label>
+        <input value="{{ cypher }}" type="text" id="cypher" name="cypher">
+        <input type="submit" value="Get info">
+    </form>
+    {% if most_likely_key_sizes %}
+        <table>
+            <tr>
+                <th>key size</th>
+                <th>occurrences</th>
+            </tr>
+            {% for key_size in most_likely_key_sizes %}
+                <tr>
+                    <td>{{ key_size[0] }}</td>
+                    <td>{{ key_size[1] }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% if patterns %}
+        <table>
+            <tr>
+                <th>pattern</th>
+                <th>spacing</th>
+                <th>occurrences</th>
+            </tr>
+            {% for pattern in patterns %}
+                <tr>
+                    <td>{{ pattern.pattern }}</td>
+                    <td>{{ pattern.spacing }}</td>
+                    <td>{{ pattern.occurrences }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+</body>
+</html>
