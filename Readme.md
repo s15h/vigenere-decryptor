@@ -5,6 +5,11 @@
 install dependencies with pip:
 `pip install -r requirements.txt`
 
+run the app:
+`python app.py`
+
+the application will be available at `http://localhost:5000`
+
 ## Docker
 Build the Docker image:
 ```bash
