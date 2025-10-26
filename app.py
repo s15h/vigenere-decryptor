@@ -20,15 +20,30 @@ def cipher_info():
             cipher = Cipher(cipher_text)
         if not cipher:
             return "No cipher provided"
+
         patterns = cipher.get_repeating_patterns()
         letter_dist = cipher.get_letter_distribution()
         sorted_letter_dist = sorted(letter_dist.items())
+        most_likely_key_sizes = cipher.determine_most_likely_key_sizes()[0:10]
+
+        key_length = None
+        bucket_distributions = None
+        if 'key_length' in request.form.keys() and request.form['key_length']:
+            try:
+                key_length = int(request.form['key_length'])
+                if 2 <= key_length <= 40:
+                    bucket_distributions = cipher.get_bucket_distributions(key_length)
+            except ValueError:
+                pass
+
         return render_template(
             'cipher_info.jinja',
             cipher=cipher_input_text,
             patterns=patterns[0:30],
-            most_likely_key_sizes=cipher.determine_most_likely_key_sizes()[0:10],
-            letter_distribution=sorted_letter_dist
+            most_likely_key_sizes=most_likely_key_sizes,
+            letter_distribution=sorted_letter_dist,
+            key_length=key_length,
+            bucket_distributions=bucket_distributions
         )
     return render_template('cipher_info.jinja')
 

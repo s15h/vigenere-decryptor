@@ -51,7 +51,12 @@ def strtolist(str):
 # i.e., characters like ",.:?! are added but do not change the bucket
 def splitstring(cnt, str):
 	alphabet = 'abcdefghijklmnopqrstuvwxyz'
-	# ..... body of subroutine
+	retval = ['' for _ in range(cnt)]
+	bucket_idx = 0
+	for char in str:
+		retval[bucket_idx] += char
+		if char.lower() in alphabet:
+			bucket_idx = (bucket_idx + 1) % cnt
 	return retval
 
 # gives the distribution (percentages) of occurrences of alphabet letters

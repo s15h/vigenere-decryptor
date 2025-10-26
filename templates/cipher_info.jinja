@@ -8,6 +8,10 @@
         <label for="cipher">Cipher:</label>
         <input value="{{ cipher }}" type="text" id="cipher" name="cipher">
         <input type="file" name="cipher_file" id="cipher_file">
+        <br><br>
+        <label for="key_length">Key Length (optional):</label>
+        <input value="{{ key_length }}" type="number" id="key_length" name="key_length" min="2" max="40">
+        <br><br>
         <input type="submit" value="Get info">
     </form>
     {% if most_likely_key_sizes %}
@@ -59,31 +63,29 @@
     {% endif %}
 
     {% if bucket_distributions %}
-        <h2>Letter Distributions by Bucket Size</h2>
-        {% for bucket_size, distributions in bucket_distributions.items() %}
-            <h3>{{ bucket_size }} Bucket(s)</h3>
-            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
-                {% for distribution in distributions %}
-                    <div style="flex: 1; min-width: 200px;">
-                        <h4>Bucket {{ loop.index }}</h4>
-                        <table style="font-size: 0.9em;">
-                            <tr>
-                                <th>Letter</th>
-                                <th>%</th>
-                            </tr>
-                            {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
-                                {% if distribution[letter] > 0 %}
-                                    <tr>
-                                        <td>{{ letter }}</td>
-                                        <td>{{ "%.1f"|format(distribution[letter]) }}%</td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </table>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+        <h2>Letter Distributions by Key Position</h2>
+        <p>Key Length: {{ key_length }}</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+            {% for distribution in bucket_distributions %}
+                <div style="flex: 1; min-width: 200px;">
+                    <h4>Position {{ loop.index }}</h4>
+                    <table style="font-size: 0.9em;">
+                        <tr>
+                            <th>Letter</th>
+                            <th>%</th>
+                        </tr>
+                        {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
+                            {% if distribution[letter] > 0 %}
+                                <tr>
+                                    <td>{{ letter }}</td>
+                                    <td>{{ "%.1f"|format(distribution[letter]) }}%</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endfor %}
+        </div>
     {% endif %}
 </body>
 </html>

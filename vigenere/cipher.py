@@ -88,6 +88,11 @@ class Cipher:
             return {letter: 0.0 for letter in ALPHABET}
         return {letter: (count * 100.0 / total) for letter, count in letter_counts.items()}
 
+    def get_bucket_distributions(self, key_length):
+        from vigenere.encryptor import vig_dist
+        cleaned_text = self.filter_invalid_characters(self.cipher_text.lower())
+        return vig_dist(key_length, cleaned_text)
+
     @staticmethod
     def get_factors(n, max_factor):
         """Get all factors of n up to max_factor."""
