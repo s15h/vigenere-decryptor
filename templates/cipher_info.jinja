@@ -46,22 +46,6 @@
         </table>
     {% endif %}
 
-    {% if letter_distribution %}
-        <h2>Letter Distribution</h2>
-        <table>
-            <tr>
-                <th>Letter</th>
-                <th>Percentage</th>
-            </tr>
-            {% for letter, percentage in letter_distribution %}
-                <tr>
-                    <td>{{ letter }}</td>
-                    <td>{{ "%.2f"|format(percentage) }}%</td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% endif %}
-
     {% if bucket_distributions %}
         <h2>Letter Distributions by Key Position</h2>
         <p>Key Length: {{ key_length }}</p>
