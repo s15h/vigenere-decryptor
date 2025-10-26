@@ -4,9 +4,10 @@
 </head>
 <body>
     <h1>Decryption</h1>
-    <form method="post">
+    <form enctype="multipart/form-data" method="post">
         <label for="cipher">Cipher:</label>
         <input type="text" id="cipher" name="cipher" value="{{ cipher }}">
+        <input type="file" name="cipher_file" id="cipher_file">
         <label for="keyword">Vigenère keyword:</label>
         <input type="text" id="keyword" name="keyword" value="{{ keyword }}">
         <input type="submit" value="Decrypt">

@@ -33,7 +33,20 @@ def cipher_info():
 @app.route('/decrypt/vigenere', methods=['GET', 'POST'])
 def decrypt_vigenere():
     if request.method == 'POST':
-        cipher = request.form['cipher']
+        cipher_input_text = None
+        cipher = None
+
+        if 'cipher' in request.form.keys() and request.form['cipher']:
+            cipher_input_text = request.form['cipher']
+            cipher = request.form['cipher']
+
+        if 'cipher_file' in request.files.keys() and request.files['cipher_file']:
+            cipher_file = request.files['cipher_file']
+            cipher = cipher_file.read().decode('utf-8')
+
+        if not cipher:
+            return "No cipher provided"
+
         keyword = request.form['keyword']
         decrypted_message = vigenere.encryptor.vigenere(
             vigenere.encryptor.vig_decryptkey(keyword),
@@ -42,7 +55,7 @@ def decrypt_vigenere():
         return render_template(
             'decrypt_vigenere.jinja',
             decrypted_message=decrypted_message,
-            cipher=cipher,
+            cipher=cipher_input_text,
            keyword=keyword
         )
     return render_template('decrypt_vigenere.jinja')
