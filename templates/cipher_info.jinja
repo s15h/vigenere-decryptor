@@ -73,12 +73,21 @@
                         <tr>
                             <th>Letter</th>
                             <th>%</th>
+                            <th>Key?</th>
                         </tr>
                         {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
                             {% if distribution[letter] > 0 %}
                                 <tr>
                                     <td>{{ letter }}</td>
                                     <td>{{ "%.1f"|format(distribution[letter]) }}%</td>
+                                    <td>
+                                        {% if 17 <= distribution[letter] <= 19 %}
+                                            {% set letter_index = 'abcdefghijklmnopqrstuvwxyz'.index(letter) %}
+                                            {% set e_index = 4 %}
+                                            {% set key_index = (letter_index - e_index) % 26 %}
+                                            <strong>{{ 'abcdefghijklmnopqrstuvwxyz'[key_index] }}</strong>
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endif %}
                         {% endfor %}
