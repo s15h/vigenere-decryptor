@@ -24,8 +24,8 @@ def cipher_info():
         return render_template(
             'cipher_info.jinja',
             cipher=cipher_input_text,
-            patterns=patterns,
-            most_likely_key_sizes=cipher.determine_most_likely_key_sizes()
+            patterns=patterns[0:30],
+            most_likely_key_sizes=cipher.determine_most_likely_key_sizes()[0:10]
         )
     return render_template('cipher_info.jinja')
 

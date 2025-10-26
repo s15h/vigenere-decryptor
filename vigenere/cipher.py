@@ -1,4 +1,6 @@
 from vigenere.pattern import Pattern
+import math
+
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
 class Cipher:
@@ -11,11 +13,18 @@ class Cipher:
     def determine_most_likely_key_sizes(self):
         recurring = self.get_recurring_patterns()
         spacing_counts = {}
+        max_key_length = 40
         for spacings in recurring.values():
             for spacing, pattern_obj in spacings.items():
-                spacing_counts[spacing] = spacing_counts.get(spacing, 0) + pattern_obj.occurrences
-        sorted_spacings = sorted(spacing_counts.items(), key=lambda x: x[1], reverse=True)
-        return sorted_spacings
+                weight = pattern_obj.occurrences
+
+                factors = self.get_factors(spacing, max_key_length)
+                for factor in factors:
+                    if 2 <= factor <= max_key_length:
+                        spacing_counts[factor] = spacing_counts.get(factor, 0) + weight
+
+        sorted_sizes = sorted(spacing_counts.items(), key=lambda x: x[1], reverse=True)
+        return sorted_sizes
 
 
     def get_repeating_patterns(self):
@@ -29,31 +38,35 @@ class Cipher:
 
     def get_recurring_patterns(self):
         recurring_patterns = {}
-        single_patterns = {}
-        text_length = len(self.cipher_text)
-
-        for pattern_size in range(3,4):
-            for i in range(0,text_length-pattern_size):
-                pattern = self.cipher_text[i:i+pattern_size]
-                if self.string_contains_invalid_characters(pattern):
-                    continue
-                if pattern in single_patterns:
-                    single_patterns[pattern].add(i)
-                    for pattern_location in single_patterns[pattern]:
-                        if pattern_location == i:
-                            continue
-                        spacing_text = self.cipher_text[pattern_location:i]
-                        spacing = len(self.filter_invalid_characters(spacing_text))
-                        if pattern in recurring_patterns:
-                            if spacing in recurring_patterns[pattern]:
-                                recurring_patterns[pattern][spacing].add_occurrence()
-                            else:
+        cleaned_text = self.filter_invalid_characters(self.cipher_text.lower())
+        
+        # Check patterns of different sizes (longer patterns are more significant)
+        for pattern_size in range(3, min(7, len(cleaned_text) // 2)):
+            pattern_positions = {}
+            
+            # Build index of all patterns and their positions
+            for i in range(len(cleaned_text) - pattern_size + 1):
+                pattern = cleaned_text[i:i+pattern_size]
+                if pattern not in pattern_positions:
+                    pattern_positions[pattern] = []
+                pattern_positions[pattern].append(i)
+            
+            # Find patterns that repeat and calculate spacings
+            for pattern, positions in pattern_positions.items():
+                if len(positions) > 1:
+                    # Calculate all spacings between occurrences
+                    for i in range(len(positions)):
+                        for j in range(i + 1, len(positions)):
+                            spacing = positions[j] - positions[i]
+                            
+                            if pattern not in recurring_patterns:
+                                recurring_patterns[pattern] = {}
+                            
+                            if spacing not in recurring_patterns[pattern]:
                                 recurring_patterns[pattern][spacing] = Pattern(pattern, spacing)
-                        else:
-                            recurring_patterns[pattern] = {}
-                            recurring_patterns[pattern][spacing] = Pattern(pattern, spacing)
-                else:
-                    single_patterns[pattern] = {i}
+                            else:
+                                recurring_patterns[pattern][spacing].add_occurrence()
+        
         return recurring_patterns
 
     @staticmethod
@@ -66,3 +79,18 @@ class Cipher:
     @staticmethod
     def filter_invalid_characters(string):
         return ''.join(filter(lambda x: x.lower() in ALPHABET, string))
+    
+    @staticmethod
+    def get_factors(n, max_factor):
+        """Get all factors of n up to max_factor."""
+        factors = []
+        for i in range(2, min(int(math.sqrt(n)) + 1, max_factor + 1)):
+            if n % i == 0:
+                factors.append(i)
+                if i != n // i and n // i <= max_factor:
+                    factors.append(n // i)
+        if n <= max_factor and n >= 2:
+            factors.append(n)
+        return factors
+
+
