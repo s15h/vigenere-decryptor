@@ -41,5 +41,49 @@
             {% endfor %}
         </table>
     {% endif %}
+
+    {% if letter_distribution %}
+        <h2>Letter Distribution</h2>
+        <table>
+            <tr>
+                <th>Letter</th>
+                <th>Percentage</th>
+            </tr>
+            {% for letter, percentage in letter_distribution %}
+                <tr>
+                    <td>{{ letter }}</td>
+                    <td>{{ "%.2f"|format(percentage) }}%</td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% if bucket_distributions %}
+        <h2>Letter Distributions by Bucket Size</h2>
+        {% for bucket_size, distributions in bucket_distributions.items() %}
+            <h3>{{ bucket_size }} Bucket(s)</h3>
+            <div style="display: flex; flex-wrap: wrap; gap: 20px;">
+                {% for distribution in distributions %}
+                    <div style="flex: 1; min-width: 200px;">
+                        <h4>Bucket {{ loop.index }}</h4>
+                        <table style="font-size: 0.9em;">
+                            <tr>
+                                <th>Letter</th>
+                                <th>%</th>
+                            </tr>
+                            {% for letter in 'abcdefghijklmnopqrstuvwxyz' %}
+                                {% if distribution[letter] > 0 %}
+                                    <tr>
+                                        <td>{{ letter }}</td>
+                                        <td>{{ "%.1f"|format(distribution[letter]) }}%</td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {% endif %}
 </body>
 </html>

@@ -21,11 +21,14 @@ def cipher_info():
         if not cipher:
             return "No cipher provided"
         patterns = cipher.get_repeating_patterns()
+        letter_dist = cipher.get_letter_distribution()
+        sorted_letter_dist = sorted(letter_dist.items())
         return render_template(
             'cipher_info.jinja',
             cipher=cipher_input_text,
             patterns=patterns[0:30],
-            most_likely_key_sizes=cipher.determine_most_likely_key_sizes()[0:10]
+            most_likely_key_sizes=cipher.determine_most_likely_key_sizes()[0:10],
+            letter_distribution=sorted_letter_dist
         )
     return render_template('cipher_info.jinja')
 

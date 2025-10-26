@@ -80,6 +80,14 @@ class Cipher:
     def filter_invalid_characters(string):
         return ''.join(filter(lambda x: x.lower() in ALPHABET, string))
     
+    def get_letter_distribution(self):
+        cleaned_text = self.filter_invalid_characters(self.cipher_text.lower())
+        letter_counts = {letter: cleaned_text.count(letter) for letter in ALPHABET}
+        total = sum(letter_counts.values())
+        if total == 0:
+            return {letter: 0.0 for letter in ALPHABET}
+        return {letter: (count * 100.0 / total) for letter, count in letter_counts.items()}
+
     @staticmethod
     def get_factors(n, max_factor):
         """Get all factors of n up to max_factor."""
