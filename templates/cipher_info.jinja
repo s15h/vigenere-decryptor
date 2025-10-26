@@ -1,12 +1,13 @@
 <html lang="en">
 <head>
-    <title>Cypher Information</title>
+    <title>Cipher Information</title>
 </head>
 <body>
-    <h1>Cypher Information</h1>
-    <form method="POST">
-        <label for="cypher">Cypher:</label>
-        <input value="{{ cypher }}" type="text" id="cypher" name="cypher">
+    <h1>Cipher Information</h1>
+    <form enctype="multipart/form-data" method="POST">
+        <label for="cipher">Cipher:</label>
+        <input value="{{ cipher }}" type="text" id="cipher" name="cipher">
+        <input type="file" name="cipher_file" id="cipher_file">
         <input type="submit" value="Get info">
     </form>
     {% if most_likely_key_sizes %}

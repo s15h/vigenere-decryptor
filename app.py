@@ -1,43 +1,48 @@
 from flask import Flask, render_template, request
 
 import vigenere.encryptor
-from vigenere.cypher import Cypher
+from vigenere.cipher import Cipher
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def hello_world():  # put application's code here
-    return 'Hello World!'
-
-
-@app.route('/cypher/info/', methods=['GET', 'POST'])
-def cypher_info():
+@app.route('/cipher/info/', methods=['GET', 'POST'])
+def cipher_info():
     if request.method == 'POST':
-        cypher = Cypher(request.form['cypher'])
-        patterns = cypher.get_repeating_patterns()
+        cipher_input_text = None
+        cipher = None
+        if 'cipher' in request.form.keys() and request.form['cipher']:
+            cipher_input_text = request.form['cipher']
+            cipher = Cipher(request.form['cipher'])
+        if 'cipher_file' in request.files.keys() and request.files['cipher_file']:
+            cipher_file = request.files['cipher_file']
+            cipher_text = cipher_file.read().decode('utf-8')
+            cipher = Cipher(cipher_text)
+        if not cipher:
+            return "No cipher provided"
+        patterns = cipher.get_repeating_patterns()
         return render_template(
-            'cypher_info.jinja',
-            cypher=cypher.cypher_text,
+            'cipher_info.jinja',
+            cipher=cipher_input_text,
             patterns=patterns,
-            most_likely_key_sizes=cypher.determine_most_likely_key_sizes()
+            most_likely_key_sizes=cipher.determine_most_likely_key_sizes()
         )
-    return render_template('cypher_info.jinja')
+    return render_template('cipher_info.jinja')
 
 
 @app.route('/decrypt/vigenere', methods=['GET', 'POST'])
 def decrypt_vigenere():
     if request.method == 'POST':
-        cypher = request.form['cypher']
+        cipher = request.form['cipher']
         keyword = request.form['keyword']
         decrypted_message = vigenere.encryptor.vigenere(
             vigenere.encryptor.vig_decryptkey(keyword),
-            cypher
+            cipher
         )
         return render_template(
             'decrypt_vigenere.jinja',
             decrypted_message=decrypted_message,
-            cypher=cypher,
+            cipher=cipher,
            keyword=keyword
         )
     return render_template('decrypt_vigenere.jinja')
