@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='pico.min.css') }}">
 </head>
 <body>
+    <nav class="container">
+        <ul>
+            <li><strong>Vigenère Cipher Tools</strong></li>
+        </ul>
+        <ul>
+            <li><a href="{{ url_for('cipher_info') }}">Cipher Info</a></li>
+            <li><a href="{{ url_for('encrypt') }}">Encrypt</a></li>
+            <li><a href="{{ url_for('decrypt_vigenere') }}">Decrypt</a></li>
+        </ul>
+    </nav>
     <main class="container">
         {% block content %}
         {% endblock %}

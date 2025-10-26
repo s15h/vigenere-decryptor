@@ -6,7 +6,7 @@ from vigenere.cipher import Cipher
 app = Flask(__name__)
 
 
-@app.route('/cipher/info/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def cipher_info():
     if request.method == 'POST':
         cipher_input_text = None
