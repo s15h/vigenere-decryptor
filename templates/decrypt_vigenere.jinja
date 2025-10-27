@@ -12,7 +12,6 @@
         <input type="text" id="keyword" name="keyword" value="{{ keyword }}">
         <input type="submit" value="Decrypt">
     </form>
-    <p>
-        {{ decrypted_message }}
-    </p>
+    <h3>Decrypted text</h3>
+    <pre>{{ decrypted_message }}</pre>
 {% endblock %}
