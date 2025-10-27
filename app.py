@@ -128,5 +128,37 @@ def encrypt_vigenere():
     )
 
 
+@app.route('/decrypt/vigenere/auto', methods=['GET', 'POST'])
+def decrypt_vigenere_auto():
+    if request.method == 'POST':
+        cipher_input_text = None
+        cipher_obj = None
+
+        if 'cipher' in request.form.keys() and request.form['cipher']:
+            cipher_input_text = request.form['cipher']
+            cipher_raw = request.form['cipher']
+            cipher_obj = Cipher(cipher_raw)
+
+        if 'cipher_file' in request.files.keys() and request.files['cipher_file']:
+            cipher_file = request.files['cipher_file']
+            cipher_raw = cipher_file.read().decode('utf-8')
+            cipher_obj = Cipher(cipher_raw)
+
+        if not cipher_obj:
+            return "No cipher provided"
+
+        found_key, found_size, decrypted_message = cipher_obj.auto_decrypt()
+
+        return render_template(
+            'decrypt_vigenere_auto.jinja',
+            cipher=cipher_input_text,
+            used_key=found_key,
+            found_size=found_size,
+            decrypted_message=decrypted_message,
+        )
+
+    return render_template('decrypt_vigenere_auto.jinja')
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

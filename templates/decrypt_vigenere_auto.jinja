@@ -1,0 +1,23 @@
+{% extends "base.jinja" %}
+
+{% block title %}Auto Vigenère Decrypt{% endblock %}
+
+{% block content %}
+    <h1>Automatic Vigenère Decryption</h1>
+    <form enctype="multipart/form-data" method="post">
+        <label for="cipher">Cipher:</label>
+        <input type="text" id="cipher" name="cipher" value="{{ cipher }}">
+        <input type="file" name="cipher_file" id="cipher_file">
+        <input type="submit" value="Auto Decrypt">
+    </form>
+
+    {% if used_key is defined and used_key %}
+        <h2>Found key (encryption key): {{ used_key }} (length {{ found_size }})</h2>
+        <h3>Decrypted text</h3>
+        <pre>{{ decrypted_message }}</pre>
+    {% elif decrypted_message is defined and decrypted_message is none %}
+        <p>No key found with the heuristic.</p>
+    {% endif %}
+
+{% endblock %}
+

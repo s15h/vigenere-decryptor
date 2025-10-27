@@ -1,5 +1,6 @@
 from vigenere.pattern import Pattern
 import math
+import vigenere.encryptor as encryptor
 
 ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
@@ -85,6 +86,37 @@ class Cipher:
         cleaned_text = self.filter_invalid_characters(self.cipher_text.lower())
         return vig_dist(key_length, cleaned_text)
 
+    def auto_decrypt(self, min_pct=17, max_pct=19, max_key_len=40):
+        likely_key_sizes = [s for s, _ in self.determine_most_likely_key_sizes()]
+
+        for size in likely_key_sizes:
+            if size < 2 or size > max_key_len:
+                continue
+            dists = self.get_bucket_distributions(size)
+            all_buckets_have_candidate_letter = True
+            chosen_letters = []
+            for bucket in dists:
+                # check if there is are letters that might be the letter e
+                candidates_letters = [ltr for ltr, pct in bucket.items() if pct >= min_pct and pct <= max_pct]
+                if len(candidates_letters) != 1:
+                    all_buckets_have_candidate_letter = False
+                    break
+                chosen_letters.append(candidates_letters[0])
+
+            if all_buckets_have_candidate_letter:
+                # Build encryption key assuming each chosen letter corresponds to plaintext 'e'
+                alph = encryptor.ALPHABET
+                key_chars = []
+                for c in chosen_letters:
+                    shift = (alph.index(c) - alph.index('e')) % 26
+                    key_chars.append(alph[shift])
+                found_key = ''.join(key_chars)
+                decrypt_key = encryptor.vig_decryptkey(found_key)
+                decrypted_msg = encryptor.vigenere(decrypt_key, self.cipher_text)
+                return found_key, size, decrypted_msg
+
+        return None, None, None
+
     @staticmethod
     def get_factors(n, max_factor):
         """Get all factors of n up to max_factor."""
@@ -97,5 +129,3 @@ class Cipher:
         if n <= max_factor and n >= 2:
             factors.append(n)
         return factors
-
-
